@@ -13,6 +13,7 @@ import java.awt.image.DataBufferByte
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JLabel
+import kotlin.math.*
 
 
 class Grabber(capId: Int) : Runnable{
@@ -24,15 +25,41 @@ class Grabber(capId: Int) : Runnable{
 
     private var window : JFrame? = null
 
+    private fun rotate(image: Mat, angle: Double =-90.0) {
+        //Calculate size of new matrix
+        val radians = Math.toRadians(angle)
+        val sin = abs(sin(radians))
+        val cos = abs(cos(radians))
+        val newWidth = (image.width() * cos + image.height() * sin).toInt()
+        val newHeight = (image.width() * sin + image.height() * cos).toInt()
+
+        // rotating image
+        val center = Point((newWidth / 2).toDouble(), (newHeight / 2).toDouble())
+        val rotMatrix = Imgproc.getRotationMatrix2D(center, angle, 1.0) //1.0 means 100 % scale
+        val size = Size(newWidth.toDouble(), newHeight.toDouble())
+        Imgproc.warpAffine(image, image, rotMatrix, size)
+    }
+
     private fun transform(mat: Mat):Mat{
-        val modFrame = mat.submat(0,mat.rows(),160,mat.cols()-160)
+        var modFrame = mat.submat(0,mat.rows(),160,mat.cols()-160)
+//        rotate(modFrame)
+
+        val center = Point(modFrame.rows()/2.0,modFrame.cols()/2.0)
+        val rotation = Imgproc.getRotationMatrix2D(center,-90.0,1.0)
+        Imgproc.warpAffine(
+            modFrame,
+            modFrame,
+            rotation,
+            Size(modFrame.height()+105.0,modFrame.width()+122.0)
+        )
+
+        modFrame = modFrame.submat(105,modFrame.rows(),122,modFrame.cols())
+
         Imgproc.resize(
             modFrame,
             modFrame,
             Size(modFrame.width()/1.5, modFrame.height()/1.5)
         )
-        val rotation = Imgproc.getRotationMatrix2D(Point(mat.cols()/2.0,mat.rows()/2.0),-90.0,1.0)
-        Imgproc.warpAffine(modFrame,modFrame,rotation,Size(modFrame.rows().toDouble(),modFrame.cols().toDouble()))
         return modFrame
     }
 
@@ -52,11 +79,12 @@ class Grabber(capId: Int) : Runnable{
             if (title == null) JFrame()
             else JFrame(title)
         window!!.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+        window!!.isResizable = false
         val label = JLabel()
-        label.preferredSize = Dimension(100, 60)
+        label.preferredSize = Dimension(480, 640)
         window!!.contentPane = label
+        //window!!.bounds = Rectangle(480, 640)
         window!!.setLocationRelativeTo(null)
-        window!!.bounds = Rectangle(640,480)
         window!!.isVisible = true
     }
 
@@ -79,7 +107,11 @@ class Grabber(capId: Int) : Runnable{
         if (window == null){
             makeWindow()
         }
+        if(window!!.bounds.width != mat.width() || window!!.bounds.height != mat.height()) {
+            val (x,y) = Pair(window!!.bounds.x, window!!.bounds.y)
+            window!!.bounds = Rectangle(x,y,mat.width(), mat.height())
+        }
         (window!!.contentPane as JLabel).icon = ImageIcon(bufferedImage(mat))
-        //window!!.pack()
+
     }
 }
