@@ -20,12 +20,13 @@ class Grabber(capId: Int) : Runnable{
     internal val capture : VideoCapture
     init{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
-        capture = VideoCapture(capId)
+        capture = VideoCapture()
+        capture.open(capId)
     }
 
     private var window : JFrame? = null
 
-    private fun rotate(image: Mat, angle: Double =-90.0) {
+    private fun rotate(image: Mat, angle: Double = -90.0) {
         //Calculate size of new matrix
         val radians = Math.toRadians(angle)
         val sin = abs(sin(radians))
