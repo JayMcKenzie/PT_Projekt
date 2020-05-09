@@ -3,6 +3,7 @@ package imageRecognition
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import org.opencv.videoio.VideoCapture
+import org.opencv.imgcodecs.Imgcodecs
 import java.awt.Dimension
 import java.awt.Rectangle
 import java.awt.image.BufferedImage
@@ -13,13 +14,12 @@ import javax.swing.JLabel
 import kotlin.math.*
 
 
-class Grabber(capId: Int) : Runnable{
-    internal val capture : VideoCapture
+class ImageGrabber(filename: String) : Runnable{
     private val decoder = Decoder()
+    private val image : Mat
     init{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
-        capture = VideoCapture()
-        capture.open(capId)
+        image = Imgcodecs.imread(filename)
     }
 
     private var window : JFrame? = null
@@ -71,21 +71,34 @@ class Grabber(capId: Int) : Runnable{
         }
     }
 
+    private fun printAll(collection: Array<IntArray>){
+        println("[")
+        for(row in collection){
+            print("\t[ ")
+            for(elem in row){
+                print("$elem ")
+            }
+            println("]")
+        }
+        println("]")
+    }
+
     override fun run() {
         var starttime = System.currentTimeMillis()
-        var circles = Mat()
-        while (capture.isOpened){
-            val frame = Mat()
+        var circles : Mat
+        var frame = image.clone()
+        while (window!!.isShowing){
             if (System.currentTimeMillis() - starttime >= 1000) {
-                if(capture.read(frame)){
-                    circles = decoder.recognize(frame)
-                    drawCircles(frame,circles)
-                    decoder.process(frame, circles)
-                    starttime = System.currentTimeMillis()
+                frame = image.clone()
+                circles = decoder.recognize(frame)
+                drawCircles(frame,circles)
+                val matrix = decoder.process(frame,circles)
+                if(matrix != null){
+                    printAll(matrix)
                 }
-                setImageToWindow(transform(frame))
+                starttime = System.currentTimeMillis()
             }
-            else Thread.sleep(10)
+            setImageToWindow(frame)
         }
     }
 
