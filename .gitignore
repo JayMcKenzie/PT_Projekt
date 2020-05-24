@@ -2,3 +2,6 @@
 /ImageRecognition/IRModuleJava/.idea/
 /ImageRecognition/IRModuleJava/board.jpg/
 **/.DS_Store
+/out/
+/lib/
+/.idea/
