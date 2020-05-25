@@ -20,6 +20,8 @@ public class Controller {
     @FXML
     TextArea textArea;
 
+    public static ArrayList<int[][]> matrixes;
+
 
     public void fillBoard(int[][] matrix){
         int counter = 0;
@@ -42,7 +44,6 @@ public class Controller {
             }
         }
     }
-
 
 
 }
