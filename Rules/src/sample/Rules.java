@@ -36,17 +36,17 @@ public class Rules {
         }
     }
 
-    public Boolean checkMove(ArrayList<Integer> change){
+    /*public Boolean checkMove(ArrayList<Integer> change){
 
         int x1 = change.get(0);
         int y1 = change.get(1);
         int x2 = change.get(2);
         int y2 = change.get(3);
 
-        if(checkLength(x1,y1,x2,y2) == )
+      //  if(checkLength(x1,y1,x2,y2) == )
 
 
-    }
+    }*/
 
     public int checkLength(int x1, int y1, int x2, int y2){
         if(x1 == 3 || x2 == 3){ return Math.abs(y2-y1); }
