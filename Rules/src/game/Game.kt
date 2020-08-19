@@ -9,6 +9,7 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
     private var startPlayer : Player? = null
     private var gameThread: Thread? = null
 
+    var newMove : Pair<Int, Int>? = null
 
     override fun start() {
         prepareBoard()
@@ -34,14 +35,11 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
             ruch@while (true) {
                 controller.fillBoard(matrix)
                 //tutaj trzeba będzie wrzucić ruch z klasy zasad (zmiana macierzy odebranych będzie nowym ruchem)
-
-                val nextMove = getPossibleMoves()[0]  //tylko dla celów niewysrywania się
-                        //var move = controller.pobierzRuch()
-//                        while (move == null) {
-//                            Thread.sleep(100)
-//                            move = controller.pobierzRuch()
-//                        }
-//                        move
+                var nextMove = newMove
+                while (nextMove == null) {
+                    Thread.sleep(100)
+                    nextMove = newMove
+                }
                 try {
                     lastMoveWasCapture = captureRequired
                     if(lastMoveWasCapture)
