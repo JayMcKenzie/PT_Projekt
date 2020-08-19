@@ -40,6 +40,7 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
                     Thread.sleep(100)
                     nextMove = newMove
                 }
+                newMove = null
                 try {
                     lastMoveWasCapture = captureRequired
                     if(lastMoveWasCapture)
