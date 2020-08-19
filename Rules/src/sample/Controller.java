@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Controller {
@@ -45,5 +46,31 @@ public class Controller {
         }
     }
 
+    public int[][] getBoard(){
+        int[][] board = new int[7][3];
+        int counter = 0;
+        for (int i = 0; i<7; i++){
+            for(int j = 0; j < 3; j++){
+                if(i == 3 && (j == 0 || j == 2)){
+                    board[i][j] = -1;
+                    continue;
+                }
+                Color c = (Color)fields.get(counter).getFill();
+                if(c.equals(Color.web("WHITE")))
+                    board[i][j] = 0;
+                else if(c.equals(Color.web("#88fbc3")))
+                    board[i][j] = 1;
+                else if(c.equals(Color.web("#ffd167")))
+                    board[i][j] = 2;
+                counter++;
+            }
+        }
+        return board;
+    }
 
+
+    public void wyswietlWiadomosc(String string){
+        textArea.clear();
+        textArea.setText(string);
+    }
 }

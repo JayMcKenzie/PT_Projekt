@@ -1,5 +1,7 @@
 package sample;
 
+import java.util.Arrays;
+
 public class test implements Runnable {
 
     private Controller kontroler;
@@ -23,15 +25,29 @@ public class test implements Runnable {
             {1,1,1}
     };
 
+    static int[][] matrix3 = {
+            {2,2,2},
+            {2,2,2},
+            {2,0,2},
+            {-1,2,-1},
+            {1,1,1},
+            {1,1,1},
+            {1,1,1}
+    };
 
     @Override
     public void run() {
         while(true){
             try {
+                int[][] board;
                 Thread.sleep(2000);
                 kontroler.fillBoard(matrix);
+                board = kontroler.getBoard();
+                System.out.println(Arrays.deepToString(board));
                 Thread.sleep(2000);
                 kontroler.fillBoard(matrix2);
+                board = kontroler.getBoard();
+                System.out.println(Arrays.deepToString(board));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
