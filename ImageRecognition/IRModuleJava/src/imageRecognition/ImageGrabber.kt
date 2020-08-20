@@ -14,12 +14,17 @@ import javax.swing.JLabel
 import kotlin.math.*
 
 
-class ImageGrabber(filename: String) : Runnable{
+class ImageGrabber(val filename: String) : Runnable{
+    companion object{
+        var matrix = Array(7){ IntArray(3) }
+    }
     private val decoder = Decoder()
     private val image : Mat
+    private var open:Boolean
     init{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
         image = Imgcodecs.imread(filename)
+        open = true
     }
 
     private var window : JFrame? = null
@@ -86,16 +91,13 @@ class ImageGrabber(filename: String) : Runnable{
     override fun run() {
         var starttime = System.currentTimeMillis()
         var circles : Mat
-        var frame = image.clone()
-        while (window!!.isShowing){
+        var frame = Imgcodecs.imread(filename)
+        while (open){
             if (System.currentTimeMillis() - starttime >= 1000) {
-                frame = image.clone()
+                frame = Imgcodecs.imread(filename)
                 circles = decoder.recognize(frame)
                 drawCircles(frame,circles)
-                val matrix = decoder.process(frame,circles)
-                if(matrix != null){
-                    printAll(matrix)
-                }
+                matrix = decoder.process(frame,circles) ?: matrix
                 starttime = System.currentTimeMillis()
             }
             setImageToWindow(frame)
@@ -129,6 +131,10 @@ class ImageGrabber(filename: String) : Runnable{
             return image
         }
         return BufferedImage(200,200,BufferedImage.TYPE_BYTE_GRAY)
+    }
+
+    fun close(){
+        open = false
     }
 
     private fun setImageToWindow(mat:Mat){

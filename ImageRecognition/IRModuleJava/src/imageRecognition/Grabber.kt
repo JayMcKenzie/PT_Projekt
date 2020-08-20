@@ -1,6 +1,7 @@
 package imageRecognition
 
 import org.opencv.core.*
+import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
 import org.opencv.videoio.VideoCapture
 import java.awt.Dimension
@@ -78,6 +79,7 @@ class Grabber(capId: Int) : Runnable{
             val frame = Mat()
             if (System.currentTimeMillis() - starttime >= 1000) {
                 if(capture.read(frame)){
+                    Imgcodecs.imwrite("board.jpg", frame)
                     circles = decoder.recognize(frame)
                     drawCircles(frame,circles)
                     decoder.process(frame, circles)
