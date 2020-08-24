@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private Thread gameThread;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
@@ -15,9 +17,16 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        Thread thread = new Thread(new Rules(loader.getController()));
+        primaryStage.setOnCloseRequest(event -> {
+            gameThread.interrupt();
+            try {
+                gameThread.join();
+            }
+            catch(Exception ignored){}
+        });
+        gameThread = new Thread(new Rules(loader.getController()));
         Thread.sleep(2000);
-        thread.start();
+        gameThread.start();
     }
 
 

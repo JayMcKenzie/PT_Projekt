@@ -11,7 +11,7 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
 
     var newMove : Pair<Int, Int>? = null
 
-    override fun start() {
+    fun start() {
         prepareBoard()
         prepareGame()
         startPlayer = if (Random.nextInt(1, 3) == 1) player1 else player2
@@ -19,12 +19,20 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
         gameThread = thread {
             try {
                 run()
-            } catch (ignored: InterruptedException) {
-            } /*catch (e: Throwable) {
-                println("Game.kt:40 - " + e.localizedMessage)
-            }*/
+            } catch (ignored: InterruptedException) {}
         }
+    }
 
+    fun start(inputMatrix:Array<IntArray>){
+        prepareBoard(inputMatrix)
+        prepareGame()
+        startPlayer = if (Random.nextInt(1, 3) == 1) player1 else player2
+        currentPlayer = startPlayer
+        gameThread = thread {
+            try {
+                run()
+            } catch (ignored: InterruptedException) {}
+        }
     }
 
     override fun run() {
@@ -46,7 +54,7 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
                     if(lastMoveWasCapture)
                         lastCapturePawn = nextMove.second
                     move(nextMove.first, nextMove.second)
-                    controller.wyswietlWiadomosc("")
+                    //controller.wyswietlWiadomosc("")
                 } catch (e: InvalidMoveException) {
                     controller.wyswietlWiadomosc("Nie można wykonać ruchu")
                     continue@ruch
@@ -66,5 +74,10 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
         }
         controller.fillBoard(matrix)
         controller.wyswietlWiadomosc("Koniec gry! Wygrał gracz ${winner!!.number}")
+        println("End of game")
+    }
+
+    fun stop(){
+        gameThread?.interrupt()
     }
 }

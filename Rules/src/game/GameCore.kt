@@ -179,6 +179,14 @@ abstract class GameCore(val player1: Player, val player2: Player) {
         }
     }
 
+    internal fun prepareBoard(input:Array<IntArray>) {
+        for (y in input.indices) {
+            for(x in input[0].indices){
+                matrix[y][x] = input[y][x]
+            }
+        }
+    }
+
     fun checkGameOver() {
         when {
             getPlayerFields(1).isEmpty() -> {
@@ -277,7 +285,5 @@ abstract class GameCore(val player1: Player, val player2: Player) {
         matrix[middleCoords[1]][middleCoords[0]] = 0
         matrix[startCoords[1]][startCoords[0]] = 0
     }
-
-    abstract fun start()
 
 }

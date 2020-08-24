@@ -34,6 +34,25 @@ public class test implements Runnable {
             {1,1,1},
             {1,1,1}
     };
+    static int[][] matrix4 = {
+            {1,1,1},
+            {1,1,1},
+            {1,0,1},
+            {-1,1,-1},
+            {2,2,2},
+            {2,2,2},
+            {2,2,2}
+    };
+
+    static int[][] matrix5 = {
+            {1,1,1},
+            {1,1,1},
+            {1,2,1},
+            {-1,0,-1},
+            {2,0,2},
+            {2,2,2},
+            {2,2,2}
+    };
 
     @Override
     public void run() {

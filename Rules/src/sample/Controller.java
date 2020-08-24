@@ -68,7 +68,6 @@ public class Controller {
         return board;
     }
 
-
     public void wyswietlWiadomosc(String string){
         textArea.clear();
         textArea.setText(string);
