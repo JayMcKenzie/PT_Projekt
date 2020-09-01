@@ -3,8 +3,10 @@ package sample;
 import game.Game;
 import game.Player;
 import game.PlayerType;
+import imageRecognition.ImageGrabber;
 import kotlin.Pair;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Rules implements Runnable {
@@ -89,14 +91,19 @@ public class Rules implements Runnable {
     @Override
     public void run() {
         Game game = new Game(new Player(PlayerType.Human, 1), new Player(PlayerType.Human, 2), kontroler);
-        game.start(matrix_board);
+
         while (true) {
             try {
                 Thread.sleep(1000);
-                matrix_camera = test.matrix5;
+                matrix_camera = ImageGrabber.Companion.getMatrix();
                 ArrayList<Integer> change = checkDifferences();
+                if(!game.getRunning())
+                {
+                    game.start(matrix_camera);
+                }
                 Boolean ifMove = checkMove(change);
                 Boolean ifBicie = checkBicie(change);
+                //game.checkCaptureObligation$Rules();
                 if (ifMove && !game.getCaptureRequired()) {
                     int pole1 = getFieldNumber(change.get(0), change.get(1));
                     int pole2 = getFieldNumber(change.get(2), change.get(3));
@@ -104,11 +111,11 @@ public class Rules implements Runnable {
                         int kolor = matrix_camera[change.get(0)][change.get(1)];
                         if (matrix_board[change.get(0)][change.get(1)] != kolor) {
                             game.setNewMove(new Pair<>(pole2, pole1));
-                            kontroler.wyswietlWiadomosc("Wykonano ruch z pola" + pole2 + "na pole" + pole1);
+                            kontroler.wyswietlWiadomosc("Wykonano ruch z pola " + pole2 + " na pole " + pole1);
                         }
                     } else {
                         game.setNewMove(new Pair<>(pole1, pole2));
-                        kontroler.wyswietlWiadomosc("Wykonano ruch z pola" + pole1 + "na pole" + pole2);
+                        kontroler.wyswietlWiadomosc("Wykonano ruch z pola " + pole1 + " na pole " + pole2);
                     }
                 }
                 if (ifBicie && game.getCaptureRequired()) {
@@ -129,20 +136,20 @@ public class Rules implements Runnable {
                         koncowe = pole3;
                         int kolor = matrix_camera[change.get(4)][change.get(5)];
                         if (matrix_board[change.get(0)][change.get(1)] == kolor) {
-                            koncowe = pole1;
+                            poczatkowe = pole1;
                         }
                         else if (matrix_board[change.get(2)][change.get(3)] == kolor) {
-                            koncowe = pole2;
+                            poczatkowe = pole2;
                         }
 
                     } else if (matrix_camera[change.get(2)][change.get(3)] != 0 ) {
                         koncowe = pole2;
                         int kolor = matrix_camera[change.get(2)][change.get(3)];
                         if(matrix_board[change.get(0)][change.get(1)] == kolor){
-                            koncowe = pole1;
+                            poczatkowe = pole1;
                         }
                         else if(matrix_board[change.get(4)][change.get(5)] == kolor){
-                            koncowe = pole3;
+                            poczatkowe = pole3;
                         }
                     }
                     if(poczatkowe != -1 && koncowe != -1){

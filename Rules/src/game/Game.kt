@@ -8,6 +8,7 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
 
     private var startPlayer : Player? = null
     private var gameThread: Thread? = null
+    var running = false
 
     var newMove : Pair<Int, Int>? = null
 
@@ -38,8 +39,9 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
     override fun run() {
         var lastMoveWasCapture = false
         var lastCapturePawn = -1
+        running = true
         while (!gameOver) {
-            checkCaptureObligation()
+            //checkCaptureObligation()
             ruch@while (true) {
                 controller.fillBoard(matrix)
                 //tutaj trzeba będzie wrzucić ruch z klasy zasad (zmiana macierzy odebranych będzie nowym ruchem)
