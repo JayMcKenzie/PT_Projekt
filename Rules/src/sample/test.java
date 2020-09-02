@@ -26,13 +26,13 @@ public class test implements Runnable {
     };
 
     static int[][] matrix3 = {
-            {2,2,2},
-            {2,2,2},
-            {2,0,2},
-            {-1,2,-1},
             {1,1,1},
             {1,1,1},
-            {1,1,1}
+            {1,0,1},
+            {-1,1,-1},
+            {2,2,2},
+            {2,2,2},
+            {2,2,2}
     };
 
     @Override
@@ -45,7 +45,7 @@ public class test implements Runnable {
                 board = kontroler.getBoard();
                 System.out.println(Arrays.deepToString(board));
                 Thread.sleep(2000);
-                kontroler.fillBoard(matrix2);
+                kontroler.fillBoard(matrix3);
                 board = kontroler.getBoard();
                 System.out.println(Arrays.deepToString(board));
             } catch (InterruptedException e) {

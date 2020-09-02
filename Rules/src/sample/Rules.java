@@ -14,8 +14,8 @@ public class Rules implements Runnable {
     }
     Controller kontroler;
 
-    int[][] matrix_camera = test.matrix;
-    int[][] matrix_board = test.matrix2;
+    int[][] matrix_camera = test.matrix3;
+    int[][] matrix_board = test.matrix;
 
     //int currentPlayer = 1;
     //Boolean move = false;
@@ -84,6 +84,7 @@ public class Rules implements Runnable {
     public void run(){
         Game game = new Game(new Player(PlayerType.Human,1), new Player(PlayerType.Human,2), kontroler);
         game.start();
+        kontroler.fillBoard(matrix_camera);
         while(true){
             try{
                 Thread.sleep(1000);
@@ -128,7 +129,7 @@ public class Rules implements Runnable {
                         int kolor = matrix_board[change.get(2)][change.get(3)];
                         System.out.println("Zbity został pionek gracza " + kolor +" z pola " + pole2);
                     }
-                    
+
                 }
 
 
