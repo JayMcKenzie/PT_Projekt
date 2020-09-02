@@ -6,7 +6,7 @@ import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.videoio.VideoCapture
 
 class CamGrabber(capId:Int, val filename:String) : Runnable{
-    internal val capture : VideoCapture
+    val capture : VideoCapture
 
     init{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)

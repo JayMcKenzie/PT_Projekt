@@ -2,7 +2,7 @@ package imageRecognition
 
 fun main(args: Array<String>){
     val camGrabber = CamGrabber(0, "board.jpg")
-    val grabber = ImageGrabber("board.jpg")
+    val grabber = ImageGrabber("board2.jpg")
     grabber.makeWindow("Wideo")
     val fred1 = Thread(camGrabber)
     val fred2 = Thread(grabber)

@@ -1,28 +1,32 @@
 package imageRecognition
 
 import org.opencv.core.Mat
+import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 
 class Decoder {
 
-    val p1_data = arrayOf(10, 25, 1)
-    val p2_data = arrayOf(40, 63, 2)
+    val p1_data = arrayOf(60, 90, 1)
+    val p2_data = arrayOf(10, 25, 2)
     val players = arrayOf(p1_data, p2_data)
     val blank_color = arrayOf(255, 255, 255)
 
     fun recognize(image: Mat):Mat{
         val imageGray = image.clone()
         Imgproc.cvtColor(image,imageGray,Imgproc.COLOR_BGR2GRAY)
-        Imgproc.threshold(imageGray,imageGray,100.0,255.0, Imgproc.THRESH_BINARY)
+        Imgproc.threshold(imageGray,imageGray,80.0,255.0, Imgproc.THRESH_BINARY)
+        Imgproc.GaussianBlur(imageGray, imageGray, Size(9.0, 9.0), 2.0, 2.0)
         val circles = Mat()
         Imgproc.HoughCircles(
             imageGray,
             circles,
             Imgproc.HOUGH_GRADIENT,
-            1.5,
+                1.5,
             imageGray.height()/10.0,
-            90.0,
-            20.0,
+            //90.0,
+            //20.0,
+                200.0,
+                26.0,
             20,
             30
         )
@@ -55,7 +59,7 @@ class Decoder {
         println("]")
     }
 
-    fun get_player(image:Mat,x:Int,y:Int) : Int {
+    fun getPlayer(image:Mat, x:Int, y:Int) : Int {
         if (x != -1 || y != -1) {
             val hsv = Mat()
             Imgproc.cvtColor(image, hsv, Imgproc.COLOR_BGR2HSV)
@@ -72,11 +76,11 @@ class Decoder {
         return -1
     }
 
-    fun create_matrix(image:Mat, rows:Array<Array<IntArray>>):Array<IntArray> {
+    fun createMatrix(image:Mat, rows:Array<Array<IntArray>>):Array<IntArray> {
         val matrix = Array(7){ IntArray(3) }
         for ((i, row) in rows.withIndex()) {
             for(x in 0..2) {
-                matrix[i][x] = get_player(image, row[x][1], row[x][0])
+                matrix[i][x] = getPlayer(image, row[x][1], row[x][0])
             }
         }
         return matrix
@@ -95,9 +99,12 @@ class Decoder {
                     rows.add(arrayOf(empty, circlesArray[i],empty))
                     continue
                 }
-                rows.add(circlesArray.copyOfRange(i,i+3))
+                rows.add(circlesArray.copyOfRange(i,i+3).sortedBy { it[0] }.toTypedArray())
             }
-            return create_matrix(image,rows.toTypedArray())
+            return createMatrix(image,rows.toTypedArray())
+        }
+        else{
+            println("Found cols ${circles.cols()}")
         }
         return null
     }

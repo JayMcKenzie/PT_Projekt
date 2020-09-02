@@ -8,9 +8,13 @@ import java.awt.Dimension
 import java.awt.Rectangle
 import java.awt.image.BufferedImage
 import java.awt.image.DataBufferByte
+import java.io.File
+import java.lang.Exception
+import java.nio.file.Files
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JLabel
+import kotlin.collections.ArrayList
 import kotlin.math.*
 
 
@@ -19,15 +23,38 @@ class ImageGrabber(val filename: String) : Runnable{
         var matrix = Array(7){ IntArray(3) }
     }
     private val decoder = Decoder()
-    private val image : Mat
+    private var image : Mat
     private var open:Boolean
+    private val images = ArrayList<String>()
+    private var imagesIterator = -1
     init{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+        when{
+            File(filename).isFile -> {
+                images.add(filename)
+            }
+            File(filename).isDirectory -> {
+                Files.list(File(filename).toPath()).forEach { images.add(it.toAbsolutePath().toString()) }
+            }
+            else -> {
+                println(File(filename).absolutePath)
+            }
+        }
         image = Imgcodecs.imread(filename)
         open = true
     }
 
     private var window : JFrame? = null
+
+    private fun getNextImage(): Mat{
+        try{
+            image = Imgcodecs.imread(images[imagesIterator+1])
+            imagesIterator++
+            println("Got image ${images[imagesIterator]}")
+        }
+        catch(ignored:Exception){ }
+        return image
+    }
 
     private fun rotate(image: Mat, angle: Double = -90.0) {
         //Calculate size of new matrix
@@ -90,17 +117,28 @@ class ImageGrabber(val filename: String) : Runnable{
 
     override fun run() {
         var starttime = System.currentTimeMillis()
+        var starttime2 = System.currentTimeMillis()
         var circles : Mat
-        var frame = Imgcodecs.imread(filename)
+        var frame = getNextImage()
         while (open){
-            if (System.currentTimeMillis() - starttime >= 1000) {
-                frame = Imgcodecs.imread(filename)
-                circles = decoder.recognize(frame)
-                drawCircles(frame,circles)
-                matrix = decoder.process(frame,circles) ?: matrix
+            if (System.currentTimeMillis() - starttime >= 900) {
+                if (System.currentTimeMillis() - starttime2 >= 5000) {
+                    frame = getNextImage()
+                    starttime2 = System.currentTimeMillis()
+                }
+                if(frame.cols() > 0 && frame.rows() > 0) {
+                    val factor = 700.0/frame.height();
+                    Imgproc.resize(frame,frame, Size(0.0,0.0),factor,factor)
+                    circles = decoder.recognize(frame)
+                    //drawCircles(frame, circles)
+                    matrix = decoder.process(frame, circles) ?: matrix
+                }
                 starttime = System.currentTimeMillis()
             }
-            setImageToWindow(frame)
+            /*if(frame.cols() > 0 && frame.rows() > 0) {
+                setImageToWindow(frame)
+            }*/
+            //printAll(matrix)
         }
     }
 
