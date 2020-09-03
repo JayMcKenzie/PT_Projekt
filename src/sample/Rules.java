@@ -3,6 +3,7 @@ package sample;
 import game.Game;
 import game.Player;
 import game.PlayerType;
+import imageRecognition.ImageGrabber;
 import kotlin.Pair;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class Rules implements Runnable {
     Controller kontroler;
 
     int[][] matrix_camera;
-    int[][] matrix_board = test.matrix;
+    int[][] matrix_board = ImageGrabber.Companion.getMatrix();
 
     //int currentPlayer = 1;
     //Boolean move = false;
@@ -72,8 +73,15 @@ public class Rules implements Runnable {
     }
 
     public int checkLength(int x1, int y1, int x2, int y2){
-        //if(x1 == 3 || x2 == 3){ return Math.abs(y2-y1); }
-        return (Math.abs(x2-x1) + Math.abs(y2-y1));
+        if (x1 == 3 || x2 == 3) {
+            return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
+        } else {
+            if (x1 == x2) {
+                return Math.abs(y1 - y2);
+            } else if (y1 == y2) {
+                return Math.abs(x1 - x2);
+            } else return 0;
+        }
     }
 
     public int getFieldNumber(int y, int x){
@@ -84,11 +92,13 @@ public class Rules implements Runnable {
     public void run(){
         Game game = new Game(new Player(PlayerType.Human,1), new Player(PlayerType.Human,2), kontroler);
         game.start();
-        kontroler.fillBoard(matrix_board);
-        matrix_camera = test.matrix2;
+        //kontroler.fillBoard(matrix_board);
+        matrix_board = ImageGrabber.Companion.getMatrix();
+        matrix_camera = ImageGrabber.Companion.getMatrix();
         while(true){
             try{
                 Thread.sleep(2000);
+                matrix_camera = ImageGrabber.Companion.getMatrix();
                 ArrayList<Integer> change = checkDifferences();
                 Boolean ifMove = checkMove(change);
                 Boolean ifBicie = checkBicie(change);
@@ -146,14 +156,13 @@ public class Rules implements Runnable {
                     }
 
                 }
-                matrix_board = matrix_camera;
+                matrix_board = game.getMatrix();
                 //kontroler.fillBoard(matrix_board);
-
-                matrix_camera = test.matrix3;
                 Thread.sleep(1000);
 
             }catch (InterruptedException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                game.stop();
                 return;
             }
         }

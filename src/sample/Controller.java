@@ -25,23 +25,22 @@ public class Controller {
 
 
     public void fillBoard(int[][] matrix){
-        int counter = 0;
-        if(matrix.length != 7 || matrix[0].length != 3)
-            return;
-        for (int i = 0; i < 7; i++){
-            for(int j = 0; j < 3; j++){
-                if(matrix[i][j] == 0){
-                    fields.get(counter).setFill(Color.web("WHITE"));
+        synchronized(this) {
+            int counter = 0;
+            if (matrix.length != 7 || matrix[0].length != 3)
+                return;
+            for (int i = 0; i < 7; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (matrix[i][j] == 0) {
+                        fields.get(counter).setFill(Color.web("WHITE"));
+                    } else if (matrix[i][j] == 1) {
+                        fields.get(counter).setFill(Color.web("#88fbc3"));
+                    } else if (matrix[i][j] == 2) {
+                        fields.get(counter).setFill(Color.web("#ffd167"));
+                    } else
+                        continue;
+                    counter++;
                 }
-                else if(matrix[i][j] == 1){
-                    fields.get(counter).setFill(Color.web("#88fbc3"));
-                }
-                else if(matrix[i][j] == 2){
-                    fields.get(counter).setFill(Color.web("#ffd167"));
-                }
-                else
-                    continue;
-                counter++;
             }
         }
     }

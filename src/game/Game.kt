@@ -67,4 +67,8 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
         controller.fillBoard(matrix)
         controller.wyswietlWiadomosc("Koniec gry! Wygrał gracz ${winner!!.number}")
     }
+
+    fun stop(){
+        gameThread?.interrupt()
+    }
 }
