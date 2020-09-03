@@ -15,17 +15,8 @@ public class test implements Runnable {
             {2,2,2},
             {2,2,2}
     };
-    static int[][] matrix2 = {
-            {2,2,2},
-            {2,2,2},
-            {2,2,2},
-            {-1,0,-1},
-            {1,1,1},
-            {1,1,1},
-            {1,1,1}
-    };
 
-    static int[][] matrix3 = {
+    static int[][] matrix2 = {
             {1,1,1},
             {1,1,1},
             {1,0,1},
@@ -35,13 +26,27 @@ public class test implements Runnable {
             {2,2,2}
     };
 
+    static int[][] matrix3 = {
+            {1,1,1},
+            {1,1,1},
+            {1,2,1},
+            {-1,0,-1},
+            {2,0,2},
+            {2,2,2},
+            {2,2,2}
+    };
+
     @Override
     public void run() {
-        while(true){
+        /*while(true){
             try {
                 int[][] board;
                 Thread.sleep(2000);
                 kontroler.fillBoard(matrix);
+                board = kontroler.getBoard();
+                System.out.println(Arrays.deepToString(board));
+                Thread.sleep(2000);
+                kontroler.fillBoard(matrix2);
                 board = kontroler.getBoard();
                 System.out.println(Arrays.deepToString(board));
                 Thread.sleep(2000);
@@ -51,7 +56,7 @@ public class test implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     public test(Controller kontroler) {

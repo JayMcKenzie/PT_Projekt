@@ -127,6 +127,7 @@ abstract class GameCore(val player1: Player, val player2: Player) {
                 }
             }
         }
+        println("wykonano funkcje " + captureMoves.isNotEmpty());
         captureRequired = captureMoves.isNotEmpty()
     }
 

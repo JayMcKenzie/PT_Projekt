@@ -57,7 +57,7 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
                 catch (e: Throwable){
                     println("Game.kt:100 - " + e.localizedMessage)
                 }
-                checkCaptureObligation()
+               // checkCaptureObligation()
                 if(!(lastMoveWasCapture && captureRequired && captureMoves.find { it.first == lastCapturePawn } is Pair<Int, Int>))
                     break@ruch
             }

@@ -18,9 +18,9 @@ public class Main extends Application {
         Thread thread = new Thread(new Rules(loader.getController()));
         Thread.sleep(2000);
         thread.start();
-        thread = new Thread(new test(loader.getController()));
-        Thread.sleep(1000);
-        thread.start();
+        //thread = new Thread(new test(loader.getController()));
+        //Thread.sleep(1000);
+        //thread.start();
     }
 
 

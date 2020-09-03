@@ -14,7 +14,7 @@ public class Rules implements Runnable {
     }
     Controller kontroler;
 
-    int[][] matrix_camera = test.matrix3;
+    int[][] matrix_camera;
     int[][] matrix_board = test.matrix;
 
     //int currentPlayer = 1;
@@ -72,26 +72,33 @@ public class Rules implements Runnable {
     }
 
     public int checkLength(int x1, int y1, int x2, int y2){
-        if(x1 == 3 || x2 == 3){ return Math.abs(y2-y1); }
-        else{ return (Math.abs(x2-x1) + Math.abs(y2-y1)); }
+        //if(x1 == 3 || x2 == 3){ return Math.abs(y2-y1); }
+        return (Math.abs(x2-x1) + Math.abs(y2-y1));
     }
 
-    public int getFieldNumber(int x, int y){
-        return (3*y + x + 1);
+    public int getFieldNumber(int y, int x){
+        return (3*y + x);
     }
 
     @Override
     public void run(){
         Game game = new Game(new Player(PlayerType.Human,1), new Player(PlayerType.Human,2), kontroler);
         game.start();
-        kontroler.fillBoard(matrix_camera);
+        kontroler.fillBoard(matrix_board);
+        matrix_camera = test.matrix2;
         while(true){
             try{
-                Thread.sleep(1000);
-                matrix_camera = test.matrix3;
+                Thread.sleep(2000);
                 ArrayList<Integer> change = checkDifferences();
                 Boolean ifMove = checkMove(change);
                 Boolean ifBicie = checkBicie(change);
+                if(!ifBicie && !ifMove){
+                    kontroler.wyswietlWiadomosc("Bledny ruch");
+                    //continue;
+                }
+                if(change.size() == 0){
+                    kontroler.wyswietlWiadomosc("Brak ruchu");
+                }
                 if (ifMove && !game.getCaptureRequired())
                 {
                     int pole1 = getFieldNumber(change.get(0),change.get(1));
@@ -100,10 +107,13 @@ public class Rules implements Runnable {
                         int kolor = matrix_camera[change.get(0)][change.get(1)];
                         if(matrix_board[change.get(0)][change.get(1)] != kolor){
                             game.setNewMove(new Pair<Integer, Integer>(pole2,pole1));
+                            System.out.println("Wykonano ruch z "+pole2+" na "+pole1);
                         }
                     }
-                    else
+                    else{
                         game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
+                        System.out.println("Wykonano ruch z "+pole1+" na "+pole2);
+                    }
                 }
                 if (ifBicie && game.getCaptureRequired()){
                     int pole1 = getFieldNumber(change.get(0),change.get(1));
@@ -112,26 +122,35 @@ public class Rules implements Runnable {
                     if(matrix_camera[change.get(0)][change.get(1)] != 0){
                       int kolor = matrix_camera[change.get(0)][change.get(1)];
                       if (matrix_board[change.get(0)][change.get(1)] != kolor){
+                          System.out.println("tutaj był pionek przed biciem: " + pole3);
                           System.out.println("tutaj pojawił się pionek po biciu: " + pole1);
                           game.setNewMove(new Pair<Integer, Integer>(pole3, pole1));
+                        //  game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
                       }
 
                     }
                     if(matrix_camera[change.get(4)][change.get(5)] != 0){
                         int kolor = matrix_camera[change.get(4)][change.get(5)];
                         if (matrix_board[change.get(4)][change.get(5)] != kolor){
+                            System.out.println("tutaj był pionek przed biciem: " + pole1);
                             System.out.println("tutaj pojawił się pionek po biciu: " + pole3);
                             game.setNewMove(new Pair<Integer, Integer>(pole1, pole3));
+
                         }
 
                     }
                     if(matrix_camera[change.get(2)][change.get(3)] == 0 && matrix_board[change.get(2)][change.get(3)] != 0){
                         int kolor = matrix_board[change.get(2)][change.get(3)];
                         System.out.println("Zbity został pionek gracza " + kolor +" z pola " + pole2);
+                        game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
                     }
 
                 }
+                matrix_board = matrix_camera;
+                //kontroler.fillBoard(matrix_board);
 
+                matrix_camera = test.matrix3;
+                Thread.sleep(1000);
 
             }catch (InterruptedException e) {
                 e.printStackTrace();
