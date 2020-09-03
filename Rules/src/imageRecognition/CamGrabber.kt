@@ -4,12 +4,14 @@ import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.videoio.VideoCapture
+import java.nio.file.Paths
 
 class CamGrabber(capId:Int, val filename:String) : Runnable{
     val capture : VideoCapture
 
     init{
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+
+        System.loadLibrary("${Paths.get("").toAbsolutePath()}/${Core.NATIVE_LIBRARY_NAME}")
         capture = VideoCapture()
         capture.open(capId)
     }

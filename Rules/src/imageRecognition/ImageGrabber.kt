@@ -11,6 +11,7 @@ import java.awt.image.DataBufferByte
 import java.io.File
 import java.lang.Exception
 import java.nio.file.Files
+import java.nio.file.Paths
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 import javax.swing.JLabel
@@ -28,13 +29,16 @@ class ImageGrabber(val filename: String) : Runnable{
     private val images = ArrayList<String>()
     private var imagesIterator = -1
     init{
+        println(System.getProperty("java.library.path"))
+        System.setProperty("java.library.path", System.getProperty("java.library.path").plus("${Paths.get("").toAbsolutePath()}/bin:"))
+        println(System.getProperty("java.library.path"))
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
         when{
             File(filename).isFile -> {
                 images.add(filename)
             }
             File(filename).isDirectory -> {
-                Files.list(File(filename).toPath()).forEach { images.add(it.toAbsolutePath().toString()) }
+                Files.list(File(filename).toPath()).sorted().forEach { images.add(it.toAbsolutePath().toString()) }
             }
             else -> {
                 println(File(filename).absolutePath)
