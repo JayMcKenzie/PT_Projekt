@@ -35,7 +35,10 @@ class ImageGrabber(val filename: String) : Runnable{
                 images.add(filename)
             }
             File(filename).isDirectory -> {
-                Files.list(File(filename).toPath()).sorted().forEach { images.add(it.toAbsolutePath().toString()) }
+                Files.list(File(filename).toPath()).sorted(FileNamesComparator()).forEach { images.add(it.toAbsolutePath().toString()) }
+                for(image in images){
+                    println(image)
+                }
             }
             else -> {
                 println(File(filename).absolutePath)
