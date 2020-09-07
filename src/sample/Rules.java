@@ -152,7 +152,7 @@ public class Rules implements Runnable {
                     if(matrix_camera[change.get(2)][change.get(3)] == 0 && matrix_board[change.get(2)][change.get(3)] != 0){
                         int kolor = matrix_board[change.get(2)][change.get(3)];
                         System.out.println("Zbity został pionek gracza " + kolor +" z pola " + pole2);
-                        game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
+                       // game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
                     }
 
                 }
