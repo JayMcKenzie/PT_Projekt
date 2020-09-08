@@ -105,9 +105,9 @@ abstract class GameCore(val player1: Player, val player2: Player) {
         return arrayOf(x2 - x1, y2 - y1)
     }
 
-    internal fun checkCaptureObligation() {
+    internal fun checkCaptureObligation(player:Player = currentPlayer!!) {
         captureMoves.clear()
-        for (i in getPlayerFields(currentPlayer!!.number)) {
+        for (i in getPlayerFields(player.number)) {
             val enemyNeighbors = findNeighbors(i).filter { matrix[it / 3][it % 3] == if (currentPlayer!!.number == 1) 2 else 1 }
             for (enemyField in enemyNeighbors) {
                 try {

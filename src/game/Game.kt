@@ -14,7 +14,7 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
     override fun start() {
         prepareBoard()
         prepareGame()
-        startPlayer = if (Random.nextInt(1, 3) == 1) player1 else player2
+        startPlayer = player2 //if (Random.nextInt(1, 3) == 1) player1 else player2
         currentPlayer = startPlayer
         gameThread = thread {
             try {
@@ -34,7 +34,6 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
             checkCaptureObligation()
             ruch@while (true) {
                 controller.fillBoard(matrix)
-                //tutaj trzeba będzie wrzucić ruch z klasy zasad (zmiana macierzy odebranych będzie nowym ruchem)
                 var nextMove = newMove
                 while (nextMove == null) {
                     Thread.sleep(100)
@@ -57,9 +56,11 @@ open class Game(player1: Player, player2: Player, private val controller: Contro
                 catch (e: Throwable){
                     println("Game.kt:100 - " + e.localizedMessage)
                 }
-               // checkCaptureObligation()
-                if(!(lastMoveWasCapture && captureRequired && captureMoves.find { it.first == lastCapturePawn } is Pair<Int, Int>))
+                checkCaptureObligation()
+                if(!(lastMoveWasCapture && captureRequired && captureMoves.find { it.first == lastCapturePawn } is Pair<Int, Int>)){
                     break@ruch
+                }
+
             }
             currentPlayer = getOponent(currentPlayer)
             Thread.sleep(100)
