@@ -94,21 +94,24 @@ public class Rules implements Runnable {
         game.start();
         //kontroler.fillBoard(matrix_board);
         matrix_board = ImageGrabber.Companion.getMatrix();
-        matrix_camera = ImageGrabber.Companion.getMatrix();
+        //matrix_camera = ImageGrabber.Companion.getMatrix();
         while(true){
             try{
-                Thread.sleep(2000);
+                Thread.sleep(1000);
                 matrix_camera = ImageGrabber.Companion.getMatrix();
                 ArrayList<Integer> change = checkDifferences();
                 Boolean ifMove = checkMove(change);
                 Boolean ifBicie = checkBicie(change);
-                if(!ifBicie && !ifMove){
+                Thread.sleep(100);
+                if(change.isEmpty()){
+                    kontroler.wyswietlWiadomosc("Brak ruchu");
+                }
+                Thread.sleep(100);
+                if((!ifMove && !ifBicie) || (ifBicie && !game.getCaptureRequired()) || (!ifBicie && game.getCaptureRequired()) || (ifMove && game.getCaptureRequired()) || (!ifMove && !game.getCaptureRequired())){
                     kontroler.wyswietlWiadomosc("Bledny ruch");
                     //continue;
                 }
-                if(change.size() == 0){
-                    kontroler.wyswietlWiadomosc("Brak ruchu");
-                }
+
                 if (ifMove && !game.getCaptureRequired())
                 {
                     int pole1 = getFieldNumber(change.get(0),change.get(1));
