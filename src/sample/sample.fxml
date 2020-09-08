@@ -55,6 +55,6 @@
             <fx:reference source="field19" />
          </ArrayList>
       </fx:define>
-      <TextArea fx:id="textArea" editable="false" layoutX="525.0" layoutY="188.0" prefHeight="200.0" prefWidth="200.0" />
+      <TextArea fx:id="textArea" editable="false" layoutX="479.0" layoutY="188.0" prefHeight="199.0" prefWidth="258.0" />
    </children>
 </Pane>

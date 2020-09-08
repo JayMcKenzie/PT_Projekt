@@ -23,6 +23,8 @@ public class Controller {
 
     public static ArrayList<int[][]> matrixes;
 
+    private StringBuilder fieldContent = new StringBuilder("");
+
 
     public void fillBoard(int[][] matrix){
         synchronized(this) {
@@ -69,7 +71,7 @@ public class Controller {
 
 
     public void wyswietlWiadomosc(String string){
-        textArea.clear();
-        textArea.setText(string);
+        fieldContent.append(string).append("\n");
+        textArea.setText(fieldContent.toString());
     }
 }

@@ -94,7 +94,6 @@ public class Rules implements Runnable {
         game.start();
         //kontroler.fillBoard(matrix_board);
         matrix_board = ImageGrabber.Companion.getMatrix();
-        //matrix_camera = ImageGrabber.Companion.getMatrix();
         while(true){
             try{
                 Thread.sleep(1000);
@@ -103,13 +102,15 @@ public class Rules implements Runnable {
                 Boolean ifMove = checkMove(change);
                 Boolean ifBicie = checkBicie(change);
                 Thread.sleep(100);
-                if(change.isEmpty()){
+                if(matrix_board == matrix_camera){
                     kontroler.wyswietlWiadomosc("Brak ruchu");
                 }
                 Thread.sleep(100);
-                if((!ifMove && !ifBicie) || (ifBicie && !game.getCaptureRequired()) || (!ifBicie && game.getCaptureRequired()) || (ifMove && game.getCaptureRequired()) || (!ifMove && !game.getCaptureRequired())){
-                    kontroler.wyswietlWiadomosc("Bledny ruch");
-                    //continue;
+                if((ifMove && game.getCaptureRequired()) || (ifBicie && !game.getCaptureRequired())){
+                    if(change.size() != 6)
+                        kontroler.wyswietlWiadomosc("Bledny ruch. Nalezy wykonac bicie");
+                    else
+                        kontroler.wyswietlWiadomosc("Bledny ruch");
                 }
 
                 if (ifMove && !game.getCaptureRequired())
@@ -120,12 +121,16 @@ public class Rules implements Runnable {
                         int kolor = matrix_camera[change.get(0)][change.get(1)];
                         if(matrix_board[change.get(0)][change.get(1)] != kolor){
                             game.setNewMove(new Pair<Integer, Integer>(pole2,pole1));
-                            System.out.println("Wykonano ruch z "+pole2+" na "+pole1);
+                            kontroler.wyswietlWiadomosc("Wykonano ruch z "+pole2+" na "+pole1+" przez gracza "+kolor);
                         }
                     }
                     else{
-                        game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
-                        System.out.println("Wykonano ruch z "+pole1+" na "+pole2);
+                        int kolor = matrix_camera[change.get(2)][change.get(3)];
+                        if(matrix_board[change.get(2)][change.get(3)] != kolor){
+                            game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
+                            kontroler.wyswietlWiadomosc("Wykonano ruch z "+pole1+" na "+pole2+" przez gracza "+kolor);
+                        }
+
                     }
                 }
                 if (ifBicie && game.getCaptureRequired()){
@@ -135,9 +140,8 @@ public class Rules implements Runnable {
                     if(matrix_camera[change.get(0)][change.get(1)] != 0){
                       int kolor = matrix_camera[change.get(0)][change.get(1)];
                       if (matrix_board[change.get(0)][change.get(1)] != kolor){
-                          System.out.println("tutaj był pionek przed biciem: " + pole3);
-                          System.out.println("tutaj pojawił się pionek po biciu: " + pole1);
                           game.setNewMove(new Pair<Integer, Integer>(pole3, pole1));
+                          kontroler.wyswietlWiadomosc("Zbity został pionek gracza " + kolor +" z pola " + pole2);
                         //  game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
                       }
 
@@ -145,23 +149,18 @@ public class Rules implements Runnable {
                     if(matrix_camera[change.get(4)][change.get(5)] != 0){
                         int kolor = matrix_camera[change.get(4)][change.get(5)];
                         if (matrix_board[change.get(4)][change.get(5)] != kolor){
-                            System.out.println("tutaj był pionek przed biciem: " + pole1);
-                            System.out.println("tutaj pojawił się pionek po biciu: " + pole3);
                             game.setNewMove(new Pair<Integer, Integer>(pole1, pole3));
-
+                            kontroler.wyswietlWiadomosc("Zbity został pionek gracza " + kolor +" z pola " + pole2);
                         }
 
-                    }
-                    if(matrix_camera[change.get(2)][change.get(3)] == 0 && matrix_board[change.get(2)][change.get(3)] != 0){
-                        int kolor = matrix_board[change.get(2)][change.get(3)];
-                        System.out.println("Zbity został pionek gracza " + kolor +" z pola " + pole2);
-                       // game.setNewMove(new Pair<Integer, Integer>(pole1,pole2));
                     }
 
                 }
                 matrix_board = game.getMatrix();
                 //kontroler.fillBoard(matrix_board);
                 Thread.sleep(1000);
+                if (game.getGameOver())
+                    break;
 
             }catch (InterruptedException e) {
                 //e.printStackTrace();
