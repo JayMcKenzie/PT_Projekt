@@ -142,7 +142,7 @@ public class Rules implements Runnable {
                     int pole2 = getFieldNumber(change.get(2),change.get(3));
                     int pole3 = getFieldNumber(change.get(4),change.get(5));
                     if(matrix_camera[change.get(0)][change.get(1)] != 0){
-                      int kolor = matrix_camera[change.get(0)][change.get(1)];
+                      int kolor = matrix_board[change.get(2)][change.get(3)];
                       if (matrix_board[change.get(0)][change.get(1)] != kolor){
                           game.setNewMove(new Pair<Integer, Integer>(pole3, pole1));
                           kontroler.wyswietlWiadomosc("Zbity został pionek gracza " + kolor +" z pola " + pole2);
@@ -152,7 +152,7 @@ public class Rules implements Runnable {
 
                     }
                     if(matrix_camera[change.get(4)][change.get(5)] != 0){
-                        int kolor = matrix_camera[change.get(4)][change.get(5)];
+                        int kolor = matrix_board[change.get(2)][change.get(3)];
                         if (matrix_board[change.get(4)][change.get(5)] != kolor){
                             game.setNewMove(new Pair<Integer, Integer>(pole1, pole3));
                             kontroler.wyswietlWiadomosc("Zbity został pionek gracza " + kolor +" z pola " + pole2);
